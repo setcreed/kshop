@@ -11,15 +11,15 @@ service User {
 }
 
 message PageInfo {
-  uint32 page = 1;
-  uint32 pageSize = 2;
+  uint32 page_num = 1;
+  uint32 page_size = 2;
 }
 
 message UserInfoResponse {
   int32 id = 1;
   string password = 2;
   string mobile = 3;
-  string nickName = 4;
+  string nick_name = 4;
   string birthday = 5;
   string gender = 6;
   int32 role = 7;
