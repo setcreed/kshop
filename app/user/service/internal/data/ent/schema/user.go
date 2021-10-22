@@ -15,7 +15,7 @@ type User struct {
 func (User) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("mobile").Unique().Comment("手机号码"),
-		field.String("password").MaxLen(100).Sensitive().Comment("密码"),
+		field.String("password_hash").Comment("密码"),
 		field.String("nick_name").MaxLen(20).Comment("昵称"),
 		field.String("head_url").MaxLen(200).Comment("头像"),
 		field.Time("birthday").Comment("生日").SchemaType(map[string]string{

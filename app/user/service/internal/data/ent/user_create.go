@@ -26,9 +26,9 @@ func (uc *UserCreate) SetMobile(s string) *UserCreate {
 	return uc
 }
 
-// SetPassword sets the "password" field.
-func (uc *UserCreate) SetPassword(s string) *UserCreate {
-	uc.mutation.SetPassword(s)
+// SetPasswordHash sets the "password_hash" field.
+func (uc *UserCreate) SetPasswordHash(s string) *UserCreate {
+	uc.mutation.SetPasswordHash(s)
 	return uc
 }
 
@@ -164,13 +164,8 @@ func (uc *UserCreate) check() error {
 	if _, ok := uc.mutation.Mobile(); !ok {
 		return &ValidationError{Name: "mobile", err: errors.New(`ent: missing required field "mobile"`)}
 	}
-	if _, ok := uc.mutation.Password(); !ok {
-		return &ValidationError{Name: "password", err: errors.New(`ent: missing required field "password"`)}
-	}
-	if v, ok := uc.mutation.Password(); ok {
-		if err := user.PasswordValidator(v); err != nil {
-			return &ValidationError{Name: "password", err: fmt.Errorf(`ent: validator failed for field "password": %w`, err)}
-		}
+	if _, ok := uc.mutation.PasswordHash(); !ok {
+		return &ValidationError{Name: "password_hash", err: errors.New(`ent: missing required field "password_hash"`)}
 	}
 	if _, ok := uc.mutation.NickName(); !ok {
 		return &ValidationError{Name: "nick_name", err: errors.New(`ent: missing required field "nick_name"`)}
@@ -243,13 +238,13 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		})
 		_node.Mobile = value
 	}
-	if value, ok := uc.mutation.Password(); ok {
+	if value, ok := uc.mutation.PasswordHash(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: user.FieldPassword,
+			Column: user.FieldPasswordHash,
 		})
-		_node.Password = value
+		_node.PasswordHash = value
 	}
 	if value, ok := uc.mutation.NickName(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserClient interface {
-	GetUserList(ctx context.Context, in *PageInfo, opts ...grpc.CallOption) (*UserListResponse, error)
+	GetUserList(ctx context.Context, in *PageInfo, opts ...grpc.CallOption) (*UserResponseList, error)
 }
 
 type userClient struct {
@@ -29,8 +29,8 @@ func NewUserClient(cc grpc.ClientConnInterface) UserClient {
 	return &userClient{cc}
 }
 
-func (c *userClient) GetUserList(ctx context.Context, in *PageInfo, opts ...grpc.CallOption) (*UserListResponse, error) {
-	out := new(UserListResponse)
+func (c *userClient) GetUserList(ctx context.Context, in *PageInfo, opts ...grpc.CallOption) (*UserResponseList, error) {
+	out := new(UserResponseList)
 	err := c.cc.Invoke(ctx, "/user.service.v1.User/GetUserList", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func (c *userClient) GetUserList(ctx context.Context, in *PageInfo, opts ...grpc
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
 type UserServer interface {
-	GetUserList(context.Context, *PageInfo) (*UserListResponse, error)
+	GetUserList(context.Context, *PageInfo) (*UserResponseList, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -50,7 +50,7 @@ type UserServer interface {
 type UnimplementedUserServer struct {
 }
 
-func (UnimplementedUserServer) GetUserList(context.Context, *PageInfo) (*UserListResponse, error) {
+func (UnimplementedUserServer) GetUserList(context.Context, *PageInfo) (*UserResponseList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserList not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}

@@ -9,8 +9,8 @@ const (
 	FieldID = "id"
 	// FieldMobile holds the string denoting the mobile field in the database.
 	FieldMobile = "mobile"
-	// FieldPassword holds the string denoting the password field in the database.
-	FieldPassword = "password"
+	// FieldPasswordHash holds the string denoting the password_hash field in the database.
+	FieldPasswordHash = "password_hash"
 	// FieldNickName holds the string denoting the nick_name field in the database.
 	FieldNickName = "nick_name"
 	// FieldHeadURL holds the string denoting the head_url field in the database.
@@ -33,7 +33,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldMobile,
-	FieldPassword,
+	FieldPasswordHash,
 	FieldNickName,
 	FieldHeadURL,
 	FieldBirthday,
@@ -54,8 +54,6 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// PasswordValidator is a validator for the "password" field. It is called by the builders before save.
-	PasswordValidator func(string) error
 	// NickNameValidator is a validator for the "nick_name" field. It is called by the builders before save.
 	NickNameValidator func(string) error
 	// HeadURLValidator is a validator for the "head_url" field. It is called by the builders before save.

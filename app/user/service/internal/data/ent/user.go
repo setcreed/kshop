@@ -19,9 +19,9 @@ type User struct {
 	// Mobile holds the value of the "mobile" field.
 	// 手机号码
 	Mobile string `json:"mobile,omitempty"`
-	// Password holds the value of the "password" field.
+	// PasswordHash holds the value of the "password_hash" field.
 	// 密码
-	Password string `json:"-"`
+	PasswordHash string `json:"password_hash,omitempty"`
 	// NickName holds the value of the "nick_name" field.
 	// 昵称
 	NickName string `json:"nick_name,omitempty"`
@@ -52,7 +52,7 @@ func (*User) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case user.FieldID, user.FieldGender, user.FieldRole:
 			values[i] = new(sql.NullInt64)
-		case user.FieldMobile, user.FieldPassword, user.FieldNickName, user.FieldHeadURL, user.FieldAddress, user.FieldDesc:
+		case user.FieldMobile, user.FieldPasswordHash, user.FieldNickName, user.FieldHeadURL, user.FieldAddress, user.FieldDesc:
 			values[i] = new(sql.NullString)
 		case user.FieldBirthday:
 			values[i] = new(sql.NullTime)
@@ -83,11 +83,11 @@ func (u *User) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				u.Mobile = value.String
 			}
-		case user.FieldPassword:
+		case user.FieldPasswordHash:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field password", values[i])
+				return fmt.Errorf("unexpected type %T for field password_hash", values[i])
 			} else if value.Valid {
-				u.Password = value.String
+				u.PasswordHash = value.String
 			}
 		case user.FieldNickName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -161,7 +161,8 @@ func (u *User) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", u.ID))
 	builder.WriteString(", mobile=")
 	builder.WriteString(u.Mobile)
-	builder.WriteString(", password=<sensitive>")
+	builder.WriteString(", password_hash=")
+	builder.WriteString(u.PasswordHash)
 	builder.WriteString(", nick_name=")
 	builder.WriteString(u.NickName)
 	builder.WriteString(", head_url=")

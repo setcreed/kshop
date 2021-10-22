@@ -12,7 +12,7 @@ var (
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "mobile", Type: field.TypeString, Unique: true},
-		{Name: "password", Type: field.TypeString, Size: 100},
+		{Name: "password_hash", Type: field.TypeString},
 		{Name: "nick_name", Type: field.TypeString, Size: 20},
 		{Name: "head_url", Type: field.TypeString, Size: 200},
 		{Name: "birthday", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "date"}},

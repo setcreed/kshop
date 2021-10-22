@@ -33,9 +33,9 @@ func (uu *UserUpdate) SetMobile(s string) *UserUpdate {
 	return uu
 }
 
-// SetPassword sets the "password" field.
-func (uu *UserUpdate) SetPassword(s string) *UserUpdate {
-	uu.mutation.SetPassword(s)
+// SetPasswordHash sets the "password_hash" field.
+func (uu *UserUpdate) SetPasswordHash(s string) *UserUpdate {
+	uu.mutation.SetPasswordHash(s)
 	return uu
 }
 
@@ -170,11 +170,6 @@ func (uu *UserUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (uu *UserUpdate) check() error {
-	if v, ok := uu.mutation.Password(); ok {
-		if err := user.PasswordValidator(v); err != nil {
-			return &ValidationError{Name: "password", err: fmt.Errorf("ent: validator failed for field \"password\": %w", err)}
-		}
-	}
 	if v, ok := uu.mutation.NickName(); ok {
 		if err := user.NickNameValidator(v); err != nil {
 			return &ValidationError{Name: "nick_name", err: fmt.Errorf("ent: validator failed for field \"nick_name\": %w", err)}
@@ -218,11 +213,11 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldMobile,
 		})
 	}
-	if value, ok := uu.mutation.Password(); ok {
+	if value, ok := uu.mutation.PasswordHash(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: user.FieldPassword,
+			Column: user.FieldPasswordHash,
 		})
 	}
 	if value, ok := uu.mutation.NickName(); ok {
@@ -313,9 +308,9 @@ func (uuo *UserUpdateOne) SetMobile(s string) *UserUpdateOne {
 	return uuo
 }
 
-// SetPassword sets the "password" field.
-func (uuo *UserUpdateOne) SetPassword(s string) *UserUpdateOne {
-	uuo.mutation.SetPassword(s)
+// SetPasswordHash sets the "password_hash" field.
+func (uuo *UserUpdateOne) SetPasswordHash(s string) *UserUpdateOne {
+	uuo.mutation.SetPasswordHash(s)
 	return uuo
 }
 
@@ -457,11 +452,6 @@ func (uuo *UserUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (uuo *UserUpdateOne) check() error {
-	if v, ok := uuo.mutation.Password(); ok {
-		if err := user.PasswordValidator(v); err != nil {
-			return &ValidationError{Name: "password", err: fmt.Errorf("ent: validator failed for field \"password\": %w", err)}
-		}
-	}
 	if v, ok := uuo.mutation.NickName(); ok {
 		if err := user.NickNameValidator(v); err != nil {
 			return &ValidationError{Name: "nick_name", err: fmt.Errorf("ent: validator failed for field \"nick_name\": %w", err)}
@@ -522,11 +512,11 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Column: user.FieldMobile,
 		})
 	}
-	if value, ok := uuo.mutation.Password(); ok {
+	if value, ok := uuo.mutation.PasswordHash(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: user.FieldPassword,
+			Column: user.FieldPasswordHash,
 		})
 	}
 	if value, ok := uuo.mutation.NickName(); ok {

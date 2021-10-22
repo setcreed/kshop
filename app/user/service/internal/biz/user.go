@@ -8,16 +8,15 @@ import (
 
 type User struct {
 	Id       int32
-	Password string
 	Mobile   string
 	NickName string
 	Birthday string
-	Gender   string
+	Gender   int32
 	Role     int32
 }
 
 type UserRepo interface {
-	ListUser(ctx context.Context, pageNum, pageSize int) (*[]User, error)
+	ListUser(ctx context.Context, pageNum, pageSize int64) ([]*User, error)
 }
 
 type UserUseCase struct {
@@ -29,7 +28,6 @@ func NewUserUseCase(repo UserRepo, logger log.Logger) *UserUseCase {
 	return &UserUseCase{repo: repo, log: log.NewHelper(log.With(logger, "module", "usecase/user"))}
 }
 
-func (uc *UserUseCase) Get(ctx context.Context, pageNum, pageSize int) (*[]User, error) {
-	uc.repo.ListUser(ctx, pageNum, pageSize)
-	return nil, nil
+func (uc *UserUseCase) Get(ctx context.Context, pageNum, pageSize int64) ([]*User, error) {
+	return uc.repo.ListUser(ctx, pageNum, pageSize)
 }

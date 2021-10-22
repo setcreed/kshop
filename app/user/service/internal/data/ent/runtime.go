@@ -13,10 +13,6 @@ import (
 func init() {
 	userFields := schema.User{}.Fields()
 	_ = userFields
-	// userDescPassword is the schema descriptor for password field.
-	userDescPassword := userFields[1].Descriptor()
-	// user.PasswordValidator is a validator for the "password" field. It is called by the builders before save.
-	user.PasswordValidator = userDescPassword.Validators[0].(func(string) error)
 	// userDescNickName is the schema descriptor for nick_name field.
 	userDescNickName := userFields[2].Descriptor()
 	// user.NickNameValidator is a validator for the "nick_name" field. It is called by the builders before save.

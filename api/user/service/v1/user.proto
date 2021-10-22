@@ -7,7 +7,7 @@ package user.service.v1;
 option go_package = "api/user/service/v1;v1";
 
 service User {
-  rpc GetUserList(PageInfo) returns (UserListResponse) {}
+  rpc GetUserList(PageInfo) returns (UserResponseList) {}
 }
 
 message PageInfo {
@@ -17,15 +17,14 @@ message PageInfo {
 
 message UserInfoResponse {
   int32 id = 1;
-  string password = 2;
-  string mobile = 3;
-  string nick_name = 4;
-  string birthday = 5;
-  string gender = 6;
-  int32 role = 7;
+  string mobile = 2;
+  string nick_name = 3;
+  string birthday = 4;
+  int32 gender = 5;
+  int32 role = 6;
 }
 
-message UserListResponse {
+message UserResponseList {
   int32 total = 1;
   repeated UserInfoResponse data = 2;
 }

@@ -99,10 +99,10 @@ func Mobile(v string) predicate.User {
 	})
 }
 
-// Password applies equality check predicate on the "password" field. It's identical to PasswordEQ.
-func Password(v string) predicate.User {
+// PasswordHash applies equality check predicate on the "password_hash" field. It's identical to PasswordHashEQ.
+func PasswordHash(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldPassword), v))
+		s.Where(sql.EQ(s.C(FieldPasswordHash), v))
 	})
 }
 
@@ -266,22 +266,22 @@ func MobileContainsFold(v string) predicate.User {
 	})
 }
 
-// PasswordEQ applies the EQ predicate on the "password" field.
-func PasswordEQ(v string) predicate.User {
+// PasswordHashEQ applies the EQ predicate on the "password_hash" field.
+func PasswordHashEQ(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldPassword), v))
+		s.Where(sql.EQ(s.C(FieldPasswordHash), v))
 	})
 }
 
-// PasswordNEQ applies the NEQ predicate on the "password" field.
-func PasswordNEQ(v string) predicate.User {
+// PasswordHashNEQ applies the NEQ predicate on the "password_hash" field.
+func PasswordHashNEQ(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldPassword), v))
+		s.Where(sql.NEQ(s.C(FieldPasswordHash), v))
 	})
 }
 
-// PasswordIn applies the In predicate on the "password" field.
-func PasswordIn(vs ...string) predicate.User {
+// PasswordHashIn applies the In predicate on the "password_hash" field.
+func PasswordHashIn(vs ...string) predicate.User {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -293,12 +293,12 @@ func PasswordIn(vs ...string) predicate.User {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.In(s.C(FieldPassword), v...))
+		s.Where(sql.In(s.C(FieldPasswordHash), v...))
 	})
 }
 
-// PasswordNotIn applies the NotIn predicate on the "password" field.
-func PasswordNotIn(vs ...string) predicate.User {
+// PasswordHashNotIn applies the NotIn predicate on the "password_hash" field.
+func PasswordHashNotIn(vs ...string) predicate.User {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -310,70 +310,70 @@ func PasswordNotIn(vs ...string) predicate.User {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.NotIn(s.C(FieldPassword), v...))
+		s.Where(sql.NotIn(s.C(FieldPasswordHash), v...))
 	})
 }
 
-// PasswordGT applies the GT predicate on the "password" field.
-func PasswordGT(v string) predicate.User {
+// PasswordHashGT applies the GT predicate on the "password_hash" field.
+func PasswordHashGT(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldPassword), v))
+		s.Where(sql.GT(s.C(FieldPasswordHash), v))
 	})
 }
 
-// PasswordGTE applies the GTE predicate on the "password" field.
-func PasswordGTE(v string) predicate.User {
+// PasswordHashGTE applies the GTE predicate on the "password_hash" field.
+func PasswordHashGTE(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldPassword), v))
+		s.Where(sql.GTE(s.C(FieldPasswordHash), v))
 	})
 }
 
-// PasswordLT applies the LT predicate on the "password" field.
-func PasswordLT(v string) predicate.User {
+// PasswordHashLT applies the LT predicate on the "password_hash" field.
+func PasswordHashLT(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldPassword), v))
+		s.Where(sql.LT(s.C(FieldPasswordHash), v))
 	})
 }
 
-// PasswordLTE applies the LTE predicate on the "password" field.
-func PasswordLTE(v string) predicate.User {
+// PasswordHashLTE applies the LTE predicate on the "password_hash" field.
+func PasswordHashLTE(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldPassword), v))
+		s.Where(sql.LTE(s.C(FieldPasswordHash), v))
 	})
 }
 
-// PasswordContains applies the Contains predicate on the "password" field.
-func PasswordContains(v string) predicate.User {
+// PasswordHashContains applies the Contains predicate on the "password_hash" field.
+func PasswordHashContains(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldPassword), v))
+		s.Where(sql.Contains(s.C(FieldPasswordHash), v))
 	})
 }
 
-// PasswordHasPrefix applies the HasPrefix predicate on the "password" field.
-func PasswordHasPrefix(v string) predicate.User {
+// PasswordHashHasPrefix applies the HasPrefix predicate on the "password_hash" field.
+func PasswordHashHasPrefix(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldPassword), v))
+		s.Where(sql.HasPrefix(s.C(FieldPasswordHash), v))
 	})
 }
 
-// PasswordHasSuffix applies the HasSuffix predicate on the "password" field.
-func PasswordHasSuffix(v string) predicate.User {
+// PasswordHashHasSuffix applies the HasSuffix predicate on the "password_hash" field.
+func PasswordHashHasSuffix(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldPassword), v))
+		s.Where(sql.HasSuffix(s.C(FieldPasswordHash), v))
 	})
 }
 
-// PasswordEqualFold applies the EqualFold predicate on the "password" field.
-func PasswordEqualFold(v string) predicate.User {
+// PasswordHashEqualFold applies the EqualFold predicate on the "password_hash" field.
+func PasswordHashEqualFold(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldPassword), v))
+		s.Where(sql.EqualFold(s.C(FieldPasswordHash), v))
 	})
 }
 
-// PasswordContainsFold applies the ContainsFold predicate on the "password" field.
-func PasswordContainsFold(v string) predicate.User {
+// PasswordHashContainsFold applies the ContainsFold predicate on the "password_hash" field.
+func PasswordHashContainsFold(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldPassword), v))
+		s.Where(sql.ContainsFold(s.C(FieldPasswordHash), v))
 	})
 }
 
