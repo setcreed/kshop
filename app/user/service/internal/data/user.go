@@ -2,9 +2,9 @@ package data
 
 import (
 	"context"
-	"github.com/setcreed/kshop/util/pagination"
 
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/setcreed/kshop/pkg/util/pagination"
 
 	"github.com/setcreed/kshop/app/user/service/internal/biz"
 )
