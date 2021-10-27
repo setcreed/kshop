@@ -2,11 +2,10 @@ package data
 
 import (
 	"context"
-
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/setcreed/kshop/pkg/util/pagination"
 
 	"github.com/setcreed/kshop/app/user/service/internal/biz"
+	"github.com/setcreed/kshop/pkg/util/pagination"
 )
 
 type userRepo struct {
@@ -36,7 +35,7 @@ func (r *userRepo) ListUser(ctx context.Context, pageNum, pageSize int64) ([]*bi
 			Id:       int32(po.ID),
 			Mobile:   po.Mobile,
 			NickName: po.NickName,
-			Birthday: "",
+			Birthday: po.Birthday.Format("2006-02-01"),
 			Gender:   int32(po.Gender),
 			Role:     int32(po.Role),
 		})

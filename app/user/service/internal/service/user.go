@@ -43,7 +43,7 @@ func (s *UserService) GetUserList(ctx context.Context, req *v1.PageInfo) (*v1.Us
 	}
 
 	return &v1.UserResponseList{
-		Total: 0,
+		Total: int32(len(rs)),
 		Data:  rs,
 	}, nil
 }

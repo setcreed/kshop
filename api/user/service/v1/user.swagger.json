@@ -51,20 +51,18 @@
           "type": "integer",
           "format": "int32"
         },
-        "password": {
-          "type": "string"
-        },
         "mobile": {
           "type": "string"
         },
-        "nickName": {
+        "nick_name": {
           "type": "string"
         },
         "birthday": {
           "type": "string"
         },
         "gender": {
-          "type": "string"
+          "type": "integer",
+          "format": "int32"
         },
         "role": {
           "type": "integer",
@@ -72,7 +70,7 @@
         }
       }
     },
-    "v1UserListResponse": {
+    "v1UserResponseList": {
       "type": "object",
       "properties": {
         "total": {
