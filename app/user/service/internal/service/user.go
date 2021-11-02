@@ -23,6 +23,22 @@ func NewUserService(uc *biz.UserUseCase, logger log.Logger) *UserService {
 	}
 }
 
+func (s *UserService) CreateUser(ctx context.Context, req *v1.CreateUserInfo) (*v1.UserInfoResponse, error) {
+	rv, err := s.uc.Create(ctx, &biz.User{
+		NickName: req.NickName,
+		Mobile:   req.Mobile,
+		Password: req.Password,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &v1.UserInfoResponse{
+		Id:       rv.Id,
+		Mobile:   rv.Mobile,
+		NickName: rv.NickName,
+	}, nil
+}
+
 func (s *UserService) GetUserList(ctx context.Context, req *v1.PageInfo) (*v1.UserResponseList, error) {
 	userList, err := s.uc.Get(ctx, int64(req.PageNum), int64(req.PageSize))
 	if err != nil {

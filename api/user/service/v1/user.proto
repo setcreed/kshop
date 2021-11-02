@@ -8,6 +8,13 @@ option go_package = "api/user/service/v1;v1";
 
 service User {
   rpc GetUserList(PageInfo) returns (UserResponseList) {}
+  rpc CreateUser(CreateUserInfo) returns (UserInfoResponse) {}
+}
+
+message CreateUserInfo {
+  string nick_name = 1;
+  string password = 2;
+  string mobile = 3;
 }
 
 message PageInfo {
