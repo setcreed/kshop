@@ -4,12 +4,14 @@ go 1.16
 
 require (
 	entgo.io/ent v0.9.1
-	github.com/go-kratos/kratos/v2 v2.1.0
+	github.com/go-kratos/kratos/v2 v2.1.1
+	github.com/go-kratos/nacos v0.1.1
 	github.com/go-sql-driver/mysql v1.5.1-0.20200311113236-681ffa848bae
 	github.com/google/wire v0.5.0
-	go.opentelemetry.io/otel v1.0.1
-	go.opentelemetry.io/otel/exporters/jaeger v1.0.1
-	go.opentelemetry.io/otel/sdk v1.0.1
+	github.com/nacos-group/nacos-sdk-go v1.0.9
+	go.opentelemetry.io/otel v1.1.0
+	go.opentelemetry.io/otel/exporters/jaeger v1.1.0
+	go.opentelemetry.io/otel/sdk v1.1.0
 	google.golang.org/genproto v0.0.0-20211018162055-cf77aa76bad2 // indirect
 	google.golang.org/grpc v1.40.0
 	google.golang.org/protobuf v1.27.1

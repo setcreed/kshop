@@ -44,3 +44,14 @@ message Data {
   Database database = 1;
   Redis redis = 2;
 }
+
+message Registry {
+  message Nacos {
+    string ipAddr = 1;
+    uint64 port = 2;
+    string namespaceID = 3;
+    string logDir = 4;
+    string cacheDir = 5;
+  }
+  Nacos nacos = 1;
+}

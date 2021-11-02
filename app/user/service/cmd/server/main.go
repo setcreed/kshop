@@ -2,20 +2,22 @@ package main
 
 import (
 	"flag"
-	"github.com/go-kratos/kratos/v2"
-	"github.com/setcreed/kshop/app/user/service/internal/conf"
-	"go.opentelemetry.io/otel/sdk/resource"
-	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 	"os"
 
+	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/jaeger"
+	"go.opentelemetry.io/otel/sdk/resource"
 	tracesdk "go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 	"gopkg.in/yaml.v3"
+
+	"github.com/setcreed/kshop/app/user/service/internal/conf"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
@@ -71,6 +73,11 @@ func main() {
 		panic(err)
 	}
 
+	var rc conf.Registry
+	if err := c.Scan(&rc); err != nil {
+		panic(err)
+	}
+
 	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(bc.Trace.Endpoint)))
 	if err != nil {
 		panic(err)
@@ -79,10 +86,11 @@ func main() {
 		tracesdk.WithBatcher(exp),
 		tracesdk.WithResource(resource.NewSchemaless(
 			semconv.ServiceNameKey.String(Name),
+			attribute.String("service", "user/service"),
 		)),
 	)
 
-	app, cleanup, err := initApp(bc.Server, bc.Data, logger, tp)
+	app, cleanup, err := initApp(bc.Server, &rc, bc.Data, logger, tp)
 	if err != nil {
 		panic(err)
 	}
