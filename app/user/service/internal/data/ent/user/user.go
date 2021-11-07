@@ -2,6 +2,10 @@
 
 package user
 
+import (
+	"time"
+)
+
 const (
 	// Label holds the string label denoting the user type in the database.
 	Label = "user"
@@ -25,6 +29,10 @@ const (
 	FieldGender = "gender"
 	// FieldRole holds the string denoting the role field in the database.
 	FieldRole = "role"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// Table holds the table name of the user in the database.
 	Table = "users"
 )
@@ -41,6 +49,8 @@ var Columns = []string{
 	FieldDesc,
 	FieldGender,
 	FieldRole,
+	FieldCreatedAt,
+	FieldUpdatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -62,4 +72,8 @@ var (
 	AddressValidator func(string) error
 	// DefaultRole holds the default value on creation for the "role" field.
 	DefaultRole int
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt func() time.Time
 )

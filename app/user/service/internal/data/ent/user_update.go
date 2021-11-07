@@ -45,9 +45,37 @@ func (uu *UserUpdate) SetNickName(s string) *UserUpdate {
 	return uu
 }
 
+// SetNillableNickName sets the "nick_name" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableNickName(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetNickName(*s)
+	}
+	return uu
+}
+
+// ClearNickName clears the value of the "nick_name" field.
+func (uu *UserUpdate) ClearNickName() *UserUpdate {
+	uu.mutation.ClearNickName()
+	return uu
+}
+
 // SetHeadURL sets the "head_url" field.
 func (uu *UserUpdate) SetHeadURL(s string) *UserUpdate {
 	uu.mutation.SetHeadURL(s)
+	return uu
+}
+
+// SetNillableHeadURL sets the "head_url" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableHeadURL(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetHeadURL(*s)
+	}
+	return uu
+}
+
+// ClearHeadURL clears the value of the "head_url" field.
+func (uu *UserUpdate) ClearHeadURL() *UserUpdate {
+	uu.mutation.ClearHeadURL()
 	return uu
 }
 
@@ -57,15 +85,57 @@ func (uu *UserUpdate) SetBirthday(t time.Time) *UserUpdate {
 	return uu
 }
 
+// SetNillableBirthday sets the "birthday" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableBirthday(t *time.Time) *UserUpdate {
+	if t != nil {
+		uu.SetBirthday(*t)
+	}
+	return uu
+}
+
+// ClearBirthday clears the value of the "birthday" field.
+func (uu *UserUpdate) ClearBirthday() *UserUpdate {
+	uu.mutation.ClearBirthday()
+	return uu
+}
+
 // SetAddress sets the "address" field.
 func (uu *UserUpdate) SetAddress(s string) *UserUpdate {
 	uu.mutation.SetAddress(s)
 	return uu
 }
 
+// SetNillableAddress sets the "address" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableAddress(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetAddress(*s)
+	}
+	return uu
+}
+
+// ClearAddress clears the value of the "address" field.
+func (uu *UserUpdate) ClearAddress() *UserUpdate {
+	uu.mutation.ClearAddress()
+	return uu
+}
+
 // SetDesc sets the "desc" field.
 func (uu *UserUpdate) SetDesc(s string) *UserUpdate {
 	uu.mutation.SetDesc(s)
+	return uu
+}
+
+// SetNillableDesc sets the "desc" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableDesc(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetDesc(*s)
+	}
+	return uu
+}
+
+// ClearDesc clears the value of the "desc" field.
+func (uu *UserUpdate) ClearDesc() *UserUpdate {
+	uu.mutation.ClearDesc()
 	return uu
 }
 
@@ -76,9 +146,23 @@ func (uu *UserUpdate) SetGender(i int) *UserUpdate {
 	return uu
 }
 
+// SetNillableGender sets the "gender" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableGender(i *int) *UserUpdate {
+	if i != nil {
+		uu.SetGender(*i)
+	}
+	return uu
+}
+
 // AddGender adds i to the "gender" field.
 func (uu *UserUpdate) AddGender(i int) *UserUpdate {
 	uu.mutation.AddGender(i)
+	return uu
+}
+
+// ClearGender clears the value of the "gender" field.
+func (uu *UserUpdate) ClearGender() *UserUpdate {
+	uu.mutation.ClearGender()
 	return uu
 }
 
@@ -100,6 +184,34 @@ func (uu *UserUpdate) SetNillableRole(i *int) *UserUpdate {
 // AddRole adds i to the "role" field.
 func (uu *UserUpdate) AddRole(i int) *UserUpdate {
 	uu.mutation.AddRole(i)
+	return uu
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (uu *UserUpdate) SetCreatedAt(t time.Time) *UserUpdate {
+	uu.mutation.SetCreatedAt(t)
+	return uu
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableCreatedAt(t *time.Time) *UserUpdate {
+	if t != nil {
+		uu.SetCreatedAt(*t)
+	}
+	return uu
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (uu *UserUpdate) SetUpdatedAt(t time.Time) *UserUpdate {
+	uu.mutation.SetUpdatedAt(t)
+	return uu
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableUpdatedAt(t *time.Time) *UserUpdate {
+	if t != nil {
+		uu.SetUpdatedAt(*t)
+	}
 	return uu
 }
 
@@ -227,10 +339,22 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldNickName,
 		})
 	}
+	if uu.mutation.NickNameCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: user.FieldNickName,
+		})
+	}
 	if value, ok := uu.mutation.HeadURL(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: user.FieldHeadURL,
+		})
+	}
+	if uu.mutation.HeadURLCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: user.FieldHeadURL,
 		})
 	}
@@ -241,6 +365,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldBirthday,
 		})
 	}
+	if uu.mutation.BirthdayCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Column: user.FieldBirthday,
+		})
+	}
 	if value, ok := uu.mutation.Address(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -248,10 +378,22 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldAddress,
 		})
 	}
+	if uu.mutation.AddressCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: user.FieldAddress,
+		})
+	}
 	if value, ok := uu.mutation.Desc(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: user.FieldDesc,
+		})
+	}
+	if uu.mutation.DescCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: user.FieldDesc,
 		})
 	}
@@ -269,6 +411,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldGender,
 		})
 	}
+	if uu.mutation.GenderCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Column: user.FieldGender,
+		})
+	}
 	if value, ok := uu.mutation.Role(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
@@ -281,6 +429,20 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Type:   field.TypeInt,
 			Value:  value,
 			Column: user.FieldRole,
+		})
+	}
+	if value, ok := uu.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: user.FieldCreatedAt,
+		})
+	}
+	if value, ok := uu.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: user.FieldUpdatedAt,
 		})
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
@@ -320,9 +482,37 @@ func (uuo *UserUpdateOne) SetNickName(s string) *UserUpdateOne {
 	return uuo
 }
 
+// SetNillableNickName sets the "nick_name" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableNickName(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetNickName(*s)
+	}
+	return uuo
+}
+
+// ClearNickName clears the value of the "nick_name" field.
+func (uuo *UserUpdateOne) ClearNickName() *UserUpdateOne {
+	uuo.mutation.ClearNickName()
+	return uuo
+}
+
 // SetHeadURL sets the "head_url" field.
 func (uuo *UserUpdateOne) SetHeadURL(s string) *UserUpdateOne {
 	uuo.mutation.SetHeadURL(s)
+	return uuo
+}
+
+// SetNillableHeadURL sets the "head_url" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableHeadURL(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetHeadURL(*s)
+	}
+	return uuo
+}
+
+// ClearHeadURL clears the value of the "head_url" field.
+func (uuo *UserUpdateOne) ClearHeadURL() *UserUpdateOne {
+	uuo.mutation.ClearHeadURL()
 	return uuo
 }
 
@@ -332,15 +522,57 @@ func (uuo *UserUpdateOne) SetBirthday(t time.Time) *UserUpdateOne {
 	return uuo
 }
 
+// SetNillableBirthday sets the "birthday" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableBirthday(t *time.Time) *UserUpdateOne {
+	if t != nil {
+		uuo.SetBirthday(*t)
+	}
+	return uuo
+}
+
+// ClearBirthday clears the value of the "birthday" field.
+func (uuo *UserUpdateOne) ClearBirthday() *UserUpdateOne {
+	uuo.mutation.ClearBirthday()
+	return uuo
+}
+
 // SetAddress sets the "address" field.
 func (uuo *UserUpdateOne) SetAddress(s string) *UserUpdateOne {
 	uuo.mutation.SetAddress(s)
 	return uuo
 }
 
+// SetNillableAddress sets the "address" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableAddress(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetAddress(*s)
+	}
+	return uuo
+}
+
+// ClearAddress clears the value of the "address" field.
+func (uuo *UserUpdateOne) ClearAddress() *UserUpdateOne {
+	uuo.mutation.ClearAddress()
+	return uuo
+}
+
 // SetDesc sets the "desc" field.
 func (uuo *UserUpdateOne) SetDesc(s string) *UserUpdateOne {
 	uuo.mutation.SetDesc(s)
+	return uuo
+}
+
+// SetNillableDesc sets the "desc" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableDesc(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetDesc(*s)
+	}
+	return uuo
+}
+
+// ClearDesc clears the value of the "desc" field.
+func (uuo *UserUpdateOne) ClearDesc() *UserUpdateOne {
+	uuo.mutation.ClearDesc()
 	return uuo
 }
 
@@ -351,9 +583,23 @@ func (uuo *UserUpdateOne) SetGender(i int) *UserUpdateOne {
 	return uuo
 }
 
+// SetNillableGender sets the "gender" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableGender(i *int) *UserUpdateOne {
+	if i != nil {
+		uuo.SetGender(*i)
+	}
+	return uuo
+}
+
 // AddGender adds i to the "gender" field.
 func (uuo *UserUpdateOne) AddGender(i int) *UserUpdateOne {
 	uuo.mutation.AddGender(i)
+	return uuo
+}
+
+// ClearGender clears the value of the "gender" field.
+func (uuo *UserUpdateOne) ClearGender() *UserUpdateOne {
+	uuo.mutation.ClearGender()
 	return uuo
 }
 
@@ -375,6 +621,34 @@ func (uuo *UserUpdateOne) SetNillableRole(i *int) *UserUpdateOne {
 // AddRole adds i to the "role" field.
 func (uuo *UserUpdateOne) AddRole(i int) *UserUpdateOne {
 	uuo.mutation.AddRole(i)
+	return uuo
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (uuo *UserUpdateOne) SetCreatedAt(t time.Time) *UserUpdateOne {
+	uuo.mutation.SetCreatedAt(t)
+	return uuo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableCreatedAt(t *time.Time) *UserUpdateOne {
+	if t != nil {
+		uuo.SetCreatedAt(*t)
+	}
+	return uuo
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (uuo *UserUpdateOne) SetUpdatedAt(t time.Time) *UserUpdateOne {
+	uuo.mutation.SetUpdatedAt(t)
+	return uuo
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableUpdatedAt(t *time.Time) *UserUpdateOne {
+	if t != nil {
+		uuo.SetUpdatedAt(*t)
+	}
 	return uuo
 }
 
@@ -526,10 +800,22 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Column: user.FieldNickName,
 		})
 	}
+	if uuo.mutation.NickNameCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: user.FieldNickName,
+		})
+	}
 	if value, ok := uuo.mutation.HeadURL(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: user.FieldHeadURL,
+		})
+	}
+	if uuo.mutation.HeadURLCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: user.FieldHeadURL,
 		})
 	}
@@ -540,6 +826,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Column: user.FieldBirthday,
 		})
 	}
+	if uuo.mutation.BirthdayCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Column: user.FieldBirthday,
+		})
+	}
 	if value, ok := uuo.mutation.Address(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -547,10 +839,22 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Column: user.FieldAddress,
 		})
 	}
+	if uuo.mutation.AddressCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: user.FieldAddress,
+		})
+	}
 	if value, ok := uuo.mutation.Desc(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: user.FieldDesc,
+		})
+	}
+	if uuo.mutation.DescCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: user.FieldDesc,
 		})
 	}
@@ -568,6 +872,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Column: user.FieldGender,
 		})
 	}
+	if uuo.mutation.GenderCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Column: user.FieldGender,
+		})
+	}
 	if value, ok := uuo.mutation.Role(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
@@ -580,6 +890,20 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Type:   field.TypeInt,
 			Value:  value,
 			Column: user.FieldRole,
+		})
+	}
+	if value, ok := uuo.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: user.FieldCreatedAt,
+		})
+	}
+	if value, ok := uuo.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: user.FieldUpdatedAt,
 		})
 	}
 	_node = &User{config: uuo.config}

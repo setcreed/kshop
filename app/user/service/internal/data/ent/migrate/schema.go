@@ -13,13 +13,15 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "mobile", Type: field.TypeString, Unique: true},
 		{Name: "password_hash", Type: field.TypeString},
-		{Name: "nick_name", Type: field.TypeString, Size: 20},
-		{Name: "head_url", Type: field.TypeString, Size: 200},
-		{Name: "birthday", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "date"}},
-		{Name: "address", Type: field.TypeString, Size: 200},
-		{Name: "desc", Type: field.TypeString, Size: 2147483647},
-		{Name: "gender", Type: field.TypeInt},
+		{Name: "nick_name", Type: field.TypeString, Nullable: true, Size: 20},
+		{Name: "head_url", Type: field.TypeString, Nullable: true, Size: 200},
+		{Name: "birthday", Type: field.TypeTime, Nullable: true, SchemaType: map[string]string{"mysql": "date"}},
+		{Name: "address", Type: field.TypeString, Nullable: true, Size: 200},
+		{Name: "desc", Type: field.TypeString, Nullable: true, Size: 2147483647},
+		{Name: "gender", Type: field.TypeInt, Nullable: true},
 		{Name: "role", Type: field.TypeInt, Default: 1},
+		{Name: "created_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime"}},
+		{Name: "updated_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime"}},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
