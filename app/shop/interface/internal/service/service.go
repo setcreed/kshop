@@ -1,7 +1,7 @@
 package service
 
 import (
-	"context"
+	"github.com/setcreed/kshop/app/shop/interface/internal/biz"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
@@ -15,15 +15,14 @@ var ProviderSet = wire.NewSet(NewShopInterface)
 type ShopInterface struct {
 	v1.UnimplementedShopInterfaceServer
 
+	uc *biz.UserUsecase
+
 	log *log.Helper
 }
 
-func (s ShopInterface) Register(ctx context.Context, req *v1.RegisterReq) (*v1.RegisterReply, error) {
-	panic("implement me")
-}
-
-func NewShopInterface(logger log.Logger) *ShopInterface {
+func NewShopInterface(uc *biz.UserUsecase, logger log.Logger) *ShopInterface {
 	return &ShopInterface{
 		log: log.NewHelper(log.With(logger, "module", "service/interface")),
+		uc:  uc,
 	}
 }

@@ -8,28 +8,30 @@ package main
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
-	"shop/internal/biz"
-	"shop/internal/conf"
-	"shop/internal/data"
-	"shop/internal/server"
-	"shop/internal/service"
+	"github.com/setcreed/kshop/app/shop/interface/internal/biz"
+	"github.com/setcreed/kshop/app/shop/interface/internal/conf"
+	"github.com/setcreed/kshop/app/shop/interface/internal/data"
+	"github.com/setcreed/kshop/app/shop/interface/internal/server"
+	"github.com/setcreed/kshop/app/shop/interface/internal/service"
+	"go.opentelemetry.io/otel/sdk/trace"
 )
 
 // Injectors from wire.go:
 
 // initApp init kratos application.
-func initApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	dataData, cleanup, err := data.NewData(confData, logger)
+func initApp(confServer *conf.Server, registry *conf.Registry, confData *conf.Data, logger log.Logger, tracerProvider *trace.TracerProvider) (*kratos.App, func(), error) {
+	discovery := data.NewDiscovery(registry)
+	userClient := data.NewUserServiceClient(discovery)
+	dataData, err := data.NewData(confData, logger, userClient)
 	if err != nil {
 		return nil, nil, err
 	}
-	greeterRepo := data.NewGreeterRepo(dataData, logger)
-	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, logger)
-	greeterService := service.NewGreeterService(greeterUsecase, logger)
-	httpServer := server.NewHTTPServer(confServer, greeterService, logger)
-	grpcServer := server.NewGRPCServer(confServer, greeterService, logger)
+	userRepo := data.NewUserRepo(dataData, logger)
+	userUsecase := biz.NewUserUsecase(userRepo, logger)
+	shopInterface := service.NewShopInterface(userUsecase, logger)
+	httpServer := server.NewHTTPServer(confServer, shopInterface, logger, tracerProvider)
+	grpcServer := server.NewGRPCServer(confServer, shopInterface, logger, tracerProvider)
 	app := newApp(logger, httpServer, grpcServer)
 	return app, func() {
-		cleanup()
 	}, nil
 }
