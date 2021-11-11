@@ -24,13 +24,14 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 	"gopkg.in/yaml.v3"
 
+	v1 "github.com/setcreed/kshop/api/user/service/v1"
 	"github.com/setcreed/kshop/app/user/service/internal/conf"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
 var (
 	// Name is the name of the compiled software.
-	Name = "kshop.user.service"
+	Name = v1.User_ServiceDesc.ServiceName
 	// Version is the version of the compiled software.
 	Version string
 	// flagconf is the config flag.

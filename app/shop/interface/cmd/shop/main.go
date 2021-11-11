@@ -3,38 +3,86 @@ package main
 import (
 	"flag"
 	"os"
+	"strconv"
 
 	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/config"
+	kratosconfig "github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
+	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	nacosconfig "github.com/go-kratos/nacos/config"
+	"github.com/nacos-group/nacos-sdk-go/clients"
+	"github.com/nacos-group/nacos-sdk-go/clients/config_client"
+	"github.com/nacos-group/nacos-sdk-go/common/constant"
+	"github.com/nacos-group/nacos-sdk-go/vo"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/jaeger"
 	"go.opentelemetry.io/otel/sdk/resource"
 	tracesdk "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
+	"gopkg.in/yaml.v3"
 
+	v1 "github.com/setcreed/kshop/api/shop/interface/v1"
 	"github.com/setcreed/kshop/app/shop/interface/internal/conf"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
 var (
 	// Name is the name of the compiled software.
-	Name = "kshop.shop.interface"
+	Name = v1.ShopInterface_ServiceDesc.ServiceName
 	// Version is the version of the compiled software.
 	Version string
 	// flagconf is the config flag.
-	flagconf string
+	flagconf          string
+	RunEnv            string
+	RegisterHost      string
+	RegisterPort      uint64
+	RegisterNamespace string
+	configID          = "shop-interface"
 )
 
+type EnvData struct {
+	ServiceName       string
+	RunEnv            string
+	RegisterHost      string
+	RegisterPort      uint64
+	RegisterNamespace string
+}
+
+func NewEnv(name, env, host, port, namespace string) *EnvData {
+	serviceName := os.Getenv(name)
+	runEnv := os.Getenv(env)
+	registerHost := os.Getenv(host)
+	registerPort := os.Getenv(port)
+	registerNamespace := os.Getenv(namespace)
+
+	report, _ := strconv.ParseInt(registerPort, 10, 64)
+
+	return &EnvData{
+		ServiceName:       serviceName,
+		RunEnv:            runEnv,
+		RegisterHost:      registerHost,
+		RegisterPort:      uint64(report),
+		RegisterNamespace: registerNamespace,
+	}
+}
+
 func init() {
+	env := NewEnv("SERVICE_NAME", "RUN_ENV", "REGISTER_HOST", "REGISTER_PORT", "REGISTER_NAMESPACE")
+	if Name == "" {
+		Name = env.ServiceName
+	}
+	RunEnv = env.RunEnv
+	RegisterHost = env.RegisterHost
+	RegisterPort = env.RegisterPort
+	RegisterNamespace = env.RegisterNamespace
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server) *kratos.App {
+func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server, rr registry.Registrar) *kratos.App {
 	return kratos.New(
 		kratos.Name(Name),
 		kratos.Version(Version),
@@ -44,6 +92,7 @@ func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server) *kratos.App {
 			hs,
 			gs,
 		),
+		kratos.Registrar(rr),
 	)
 }
 
@@ -57,10 +106,27 @@ func main() {
 		"trace_id", tracing.TraceID(),
 		"span_id", tracing.SpanID(),
 	)
-	c := config.New(
-		config.WithSource(
-			file.NewSource(flagconf),
+	//conf
+	var c kratosconfig.Config
+	var source kratosconfig.Source
+
+	if RunEnv == "" || RegisterHost == "" || RegisterPort == 0 || RegisterNamespace == "" {
+		source = file.NewSource(flagconf)
+	} else {
+		client, e := getConfigClient(RegisterNamespace)
+		if e != nil {
+			panic(e)
+		}
+		source = nacosconfig.NewConfigSource(client, nacosconfig.Group("DEFAULT_GROUP"), nacosconfig.DataID(configID))
+	}
+
+	c = kratosconfig.New(
+		kratosconfig.WithSource(
+			source,
 		),
+		kratosconfig.WithDecoder(func(kv *kratosconfig.KeyValue, v map[string]interface{}) error {
+			return yaml.Unmarshal(kv.Value, v)
+		}),
 	)
 	if err := c.Load(); err != nil {
 		panic(err)
@@ -98,4 +164,34 @@ func main() {
 	if err := app.Run(); err != nil {
 		panic(err)
 	}
+}
+
+func getConfigClient(namespaceID string) (config_client.IConfigClient, error) {
+	sc := []constant.ServerConfig{
+		*constant.NewServerConfig(RegisterHost, RegisterPort),
+	}
+
+	cc := constant.ClientConfig{
+		NamespaceId:         namespaceID, //namespace id
+		TimeoutMs:           5000,
+		NotLoadCacheAtStart: true,
+		LogDir:              "/tmp/nacos/log",
+		CacheDir:            "/tmp/nacos/cache",
+		RotateTime:          "1h",
+		MaxAge:              3,
+		LogLevel:            "debug",
+	}
+
+	// a more graceful way to create naming client
+	client, err := clients.NewConfigClient(
+		vo.NacosClientParam{
+			ClientConfig:  &cc,
+			ServerConfigs: sc,
+		},
+	)
+
+	if err != nil {
+		return nil, err
+	}
+	return client, nil
 }

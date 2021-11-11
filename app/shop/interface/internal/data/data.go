@@ -21,8 +21,8 @@ import (
 // ProviderSet is data providers.
 var ProviderSet = wire.NewSet(
 	NewData,
-	NewRegistrar,
 	NewDiscovery,
+	NewRegistrar,
 	NewUserServiceClient,
 	NewUserRepo,
 )
@@ -42,8 +42,38 @@ func NewData(c *conf.Data, logger log.Logger, uc userv1.UserClient) (*Data, erro
 	}, nil
 }
 
+// service join schema
+func joinSchemaGRPC(serviceName string) string {
+	return serviceName + ".grpc"
+}
+
 func NewDiscovery(conf *conf.Registry) registry.Discovery {
-	return nil
+	sc := []constant.ServerConfig{
+		*constant.NewServerConfig(conf.Nacos.IpAddr, conf.Nacos.Port),
+	}
+
+	cc := &constant.ClientConfig{
+		NamespaceId:         conf.Nacos.NamespaceID,
+		TimeoutMs:           5000,
+		NotLoadCacheAtStart: true,
+		LogDir:              "/tmp/nacos/log",
+		CacheDir:            "/tmp/nacos/cache",
+		RotateTime:          "1h",
+		MaxAge:              3,
+		LogLevel:            "debug",
+	}
+	cli, err := clients.NewNamingClient(
+		vo.NacosClientParam{
+			ClientConfig:  cc,
+			ServerConfigs: sc,
+		},
+	)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return nacos.New(cli)
 }
 
 func NewRegistrar(conf *conf.Registry) registry.Registrar {
@@ -78,7 +108,7 @@ func NewRegistrar(conf *conf.Registry) registry.Registrar {
 func NewUserServiceClient(r registry.Discovery) userv1.UserClient {
 	conn, err := grpc.DialInsecure(
 		context.Background(),
-		grpc.WithEndpoint("discovery:///kshop.user.service"),
+		grpc.WithEndpoint("discovery:///"+joinSchemaGRPC(userv1.User_ServiceDesc.ServiceName)),
 		grpc.WithDiscovery(r),
 		grpc.WithMiddleware(
 			recovery.Recovery(),
