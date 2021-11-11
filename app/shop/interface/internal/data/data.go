@@ -9,6 +9,8 @@ import (
 	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	nacos "github.com/go-kratos/nacos/registry"
+	"github.com/go-redis/redis/extra/redisotel"
+	"github.com/go-redis/redis/v8"
 	"github.com/google/wire"
 	"github.com/nacos-group/nacos-sdk-go/clients"
 	"github.com/nacos-group/nacos-sdk-go/common/constant"
@@ -24,21 +26,47 @@ var ProviderSet = wire.NewSet(
 	NewDiscovery,
 	NewRegistrar,
 	NewUserServiceClient,
+	NewRedis,
 	NewUserRepo,
 )
 
 // Data .
 type Data struct {
 	log *log.Helper
-	uc  userv1.UserClient
+
+	rdb *redis.Client
+
+	uc userv1.UserClient
+}
+
+func NewRedis(conf *conf.Data) *redis.Client {
+	rdb := redis.NewClient(&redis.Options{
+		Addr:         conf.Redis.Addr,
+		Password:     conf.Redis.Password,
+		DB:           int(conf.Redis.Db),
+		DialTimeout:  conf.Redis.DialTimeout.AsDuration(),
+		WriteTimeout: conf.Redis.WriteTimeout.AsDuration(),
+		ReadTimeout:  conf.Redis.ReadTimeout.AsDuration(),
+	})
+	rdb.AddHook(redisotel.TracingHook{})
+
+	return rdb
 }
 
 // NewData .
-func NewData(c *conf.Data, logger log.Logger, uc userv1.UserClient) (*Data, error) {
-	l := log.NewHelper(log.With(logger, "module", "data"))
-	return &Data{
+func NewData(c *conf.Data, rdb *redis.Client, logger log.Logger, uc userv1.UserClient) (*Data, func(), error) {
+	l := log.NewHelper(log.With(logger, "module", "shop_interface/data"))
+
+	d := &Data{
 		log: l,
+		rdb: rdb,
 		uc:  uc,
+	}
+
+	return d, func() {
+		if err := d.rdb.Close(); err != nil {
+			l.Error(err)
+		}
 	}, nil
 }
 

@@ -29,5 +29,6 @@ func NewUserUsecase(repo UserRepo, logger log.Logger) *UserUsecase {
 }
 
 func (uc *UserUsecase) Register(ctx context.Context, u *User) (*User, error) {
+	// 手机验证码校验
 	return uc.repo.Register(ctx, u)
 }

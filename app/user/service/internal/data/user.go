@@ -3,10 +3,8 @@ package data
 import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/setcreed/kshop/app/user/service/internal/pkg/util"
-	"time"
-
 	"github.com/setcreed/kshop/app/user/service/internal/biz"
+	"github.com/setcreed/kshop/app/user/service/internal/pkg/util"
 	"github.com/setcreed/kshop/pkg/util/pagination"
 )
 
@@ -23,7 +21,6 @@ func NewUserRepo(data *Data, logger log.Logger) biz.UserRepo {
 }
 
 func (r *userRepo) CreateUser(ctx context.Context, u *biz.User) (*biz.User, error) {
-	birthday, _ := time.Parse("2006-01-02 15:04:05", u.Birthday)
 	ph, err := util.HashPassword(u.Password)
 	if err != nil {
 		return nil, err
@@ -31,7 +28,6 @@ func (r *userRepo) CreateUser(ctx context.Context, u *biz.User) (*biz.User, erro
 	po, err := r.data.db.User.
 		Create().
 		SetMobile(u.Mobile).
-		SetBirthday(birthday).
 		SetNickName(u.NickName).
 		SetPasswordHash(ph).
 		Save(ctx)
