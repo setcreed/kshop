@@ -11,6 +11,7 @@ import (
 	"net/mail"
 	"net/url"
 	"regexp"
+	"sort"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -31,40 +32,86 @@ var (
 	_ = (*url.URL)(nil)
 	_ = (*mail.Address)(nil)
 	_ = anypb.Any{}
+	_ = sort.Sort
 )
 
 // Validate checks the field values on RegisterReq with the rules defined in
-// the proto definition for this message. If any rules are violated, an error
-// is returned.
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
 func (m *RegisterReq) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on RegisterReq with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in RegisterReqMultiError, or
+// nil if none found.
+func (m *RegisterReq) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *RegisterReq) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
+	var errors []error
+
 	if l := utf8.RuneCountInString(m.GetMobile()); l < 5 || l > 15 {
-		return RegisterReqValidationError{
+		err := RegisterReqValidationError{
 			field:  "Mobile",
 			reason: "value length must be between 5 and 15 runes, inclusive",
 		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
 	}
 
 	if l := utf8.RuneCountInString(m.GetPassword()); l < 3 || l > 20 {
-		return RegisterReqValidationError{
+		err := RegisterReqValidationError{
 			field:  "Password",
 			reason: "value length must be between 3 and 20 runes, inclusive",
 		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
 	}
 
 	if utf8.RuneCountInString(m.GetCode()) != 6 {
-		return RegisterReqValidationError{
+		err := RegisterReqValidationError{
 			field:  "Code",
 			reason: "value length must be 6 runes",
 		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
 
 	}
 
+	if len(errors) > 0 {
+		return RegisterReqMultiError(errors)
+	}
 	return nil
 }
+
+// RegisterReqMultiError is an error wrapping multiple validation errors
+// returned by RegisterReq.ValidateAll() if the designated constraints aren't met.
+type RegisterReqMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m RegisterReqMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m RegisterReqMultiError) AllErrors() []error { return m }
 
 // RegisterReqValidationError is the validation error returned by
 // RegisterReq.Validate if the designated constraints aren't met.
@@ -121,19 +168,53 @@ var _ interface {
 } = RegisterReqValidationError{}
 
 // Validate checks the field values on RegisterReply with the rules defined in
-// the proto definition for this message. If any rules are violated, an error
-// is returned.
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
 func (m *RegisterReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on RegisterReply with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in RegisterReplyMultiError, or
+// nil if none found.
+func (m *RegisterReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *RegisterReply) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
+
+	var errors []error
 
 	// no validation rules for Id
 
 	// no validation rules for Mobile
 
+	if len(errors) > 0 {
+		return RegisterReplyMultiError(errors)
+	}
 	return nil
 }
+
+// RegisterReplyMultiError is an error wrapping multiple validation errors
+// returned by RegisterReply.ValidateAll() if the designated constraints
+// aren't met.
+type RegisterReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m RegisterReplyMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m RegisterReplyMultiError) AllErrors() []error { return m }
 
 // RegisterReplyValidationError is the validation error returned by
 // RegisterReply.Validate if the designated constraints aren't met.
